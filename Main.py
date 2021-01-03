@@ -55,7 +55,7 @@ def run():
 
                     else:  # 크로스오버 X
                         solution1_index, solution1 = Solution.select_solution_using_roulette_wheel(solutions)
-                        solutions.insert(solution2_index, solution2)
+                        solutions.insert(solution1_index, solution1)
 
                         new_solution = copy.deepcopy(solution1)
                         new_solution.mutation()
@@ -78,6 +78,7 @@ def run():
 
                 solutions = new_solutions
                 solutions.sort()
+                break
 
         # 5. Print result
         for solution in solutions:
