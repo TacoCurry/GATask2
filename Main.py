@@ -2,6 +2,8 @@ from Output import *
 from Solution import Solution
 from Input import *
 import math
+import random
+import copy
 
 
 def run():
@@ -13,11 +15,13 @@ def run():
     # Initiate out.txt
     init_out()
 
+    crossover_rate = 1
+
     # Get total utils
     original_utils = sum([task.wcet / task.period for task in Solution.rt_tasks])
     print("Original Total util: {}".format(original_utils))
 
-    for core_max in range(Solution.processor.n_core, math.ceil(original_utils)-1, -1):
+    for core_max in range(Solution.processor.n_core, math.ceil(original_utils) - 1, -1):
         # 1. Make initial solution set
         Solution.set_random_seed()
         solutions = [Solution.get_random_solution(core_max)
@@ -29,39 +33,51 @@ def run():
                 report_print(core_max, g, solutions)
 
             new_solutions = []
-            get_new_solution = False
-            for _ in range(ga_configs.TRY_LIMIT):
+            for try_count in range(ga_configs.TRY_LIMIT):
                 # 2. 엘리트 10개 골라서 그대로 넣는다
                 for solution in solutions[:10]:
-                    new_solutions.append(solution)
+                    new_solutions.append(copy.deepcopy(solution))
 
                 # 3. (Select two solution and Crossover and Mutation and Check Validity) * 90
-                # TODO
+                for _ in range(90):
+                    if random.uniform(0, 1) <= crossover_rate:  # 크로스오버 O
+                        # 3.1.1 Select two solution
+                        solution1_index, solution1 = Solution.select_solution_using_roulette_wheel(solutions)
+                        solution2_index, solution2 = Solution.select_solution_using_roulette_wheel(solutions)
+                        solutions.insert(solution2_index, solution2)
+                        solutions.insert(solution1_index, solution1)
 
+                        # 3.1.2 Crossover & Mutation
+                        new_solution = Solution.crossover(solution1, solution2)
+                        new_solution.mutation()
 
-                # # 2. Select two solution
-                # solution1_index, solution1 = Solution.select_solution_using_roulette_wheel(solutions)
-                # solution2_index, solution2 = Solution.select_solution_using_roulette_wheel(solutions)
-                # solutions.insert(solution2_index, solution2)
-                # solutions.insert(solution1_index, solution1)
-                #
-                # # 3. Crossover
-                # new_solution = Solution.crossover(solution1, solution2)
-                # new_solution.mutation()
-                #
-                # # 4. Check Validity
-                # new_solution.calc_memory_used()
-                # new_solution.calc_memory_with_most_tasks()
-                # if new_solution.check_memory() and new_solution.check_utilization(core_max):
-                #     get_new_solution = True
-                #     break
+                        new_solutions.append(new_solution)
 
-            if get_new_solution:
+                    else:  # 크로스오버 X
+                        solution1_index, solution1 = Solution.select_solution_using_roulette_wheel(solutions)
+                        solutions.insert(solution2_index, solution2)
+
+                        new_solution = copy.deepcopy(solution1)
+                        new_solution.mutation()
+                        new_solutions.append(new_solution)
+
+                get_new_solutions = True
+                # 4. check Validity
+                for solution in new_solutions:
+                    solution.calc_memory_used()
+                    solution.calc_memory_with_most_tasks()
+                    if not solution.check_memory() or not solution.check_utilization(core_max):
+                        get_new_solutions = False
+                        break
+
+                if not get_new_solutions:
+                    if try_count < ga_configs.TRY_LIMIT - 1:
+                        continue
+                    else:
+                        raise Exception("{}th generation 이후로 교배 불가".format(g+1))
+
                 solutions = new_solutions
                 solutions.sort()
-                continue
-            else:
-                raise Exception("{}번째 generation 이후, solution 교배 불가".format(g+1))
 
         # 5. Print result
         for solution in solutions:
