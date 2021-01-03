@@ -28,28 +28,38 @@ def run():
             if g != 0 and g % 100 == 0:
                 report_print(core_max, g, solutions)
 
+            new_solutions = []
             get_new_solution = False
             for _ in range(ga_configs.TRY_LIMIT):
-                # 2. Select two solution
-                solution1_index, solution1 = Solution.select_solution_using_roulette_wheel(solutions)
-                solution2_index, solution2 = Solution.select_solution_using_roulette_wheel(solutions)
-                solutions.insert(solution2_index, solution2)
-                solutions.insert(solution1_index, solution1)
+                # 2. 엘리트 10개 골라서 넣는다
+                # TODO
 
-                # 3. Crossover
-                new_solution = Solution.crossover(solution1, solution2)
-                new_solution.mutation()
+                # 3. (Select two solution and Crossover and Mutation and Check Validity) * 90
+                # TODO
 
-                # 4. Check Validity
-                new_solution.calc_memory_used()
-                new_solution.calc_memory_with_most_tasks()
-                if new_solution.check_memory() and new_solution.check_utilization(core_max):
-                    get_new_solution = True
-                    break
+
+                # # 2. Select two solution
+                # solution1_index, solution1 = Solution.select_solution_using_roulette_wheel(solutions)
+                # solution2_index, solution2 = Solution.select_solution_using_roulette_wheel(solutions)
+                # solutions.insert(solution2_index, solution2)
+                # solutions.insert(solution1_index, solution1)
+                #
+                # # 3. Crossover
+                # new_solution = Solution.crossover(solution1, solution2)
+                # new_solution.mutation()
+                #
+                # # 4. Check Validity
+                # new_solution.calc_memory_used()
+                # new_solution.calc_memory_with_most_tasks()
+                # if new_solution.check_memory() and new_solution.check_utilization(core_max):
+                #     get_new_solution = True
+                #     break
 
             if get_new_solution:
-                # Replace worst solution into new solution
-                solutions[-1] = new_solution
+                # new_solutions 를 만든다.
+                # TODO
+
+                solutions = new_solutions
                 solutions.sort()
                 continue
             else:
