@@ -31,8 +31,9 @@ def run():
             new_solutions = []
             get_new_solution = False
             for _ in range(ga_configs.TRY_LIMIT):
-                # 2. 엘리트 10개 골라서 넣는다
-                # TODO
+                # 2. 엘리트 10개 골라서 그대로 넣는다
+                for solution in solutions[:10]:
+                    new_solutions.append(solution)
 
                 # 3. (Select two solution and Crossover and Mutation and Check Validity) * 90
                 # TODO
@@ -56,9 +57,6 @@ def run():
                 #     break
 
             if get_new_solution:
-                # new_solutions 를 만든다.
-                # TODO
-
                 solutions = new_solutions
                 solutions.sort()
                 continue
