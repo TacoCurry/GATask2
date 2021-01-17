@@ -15,7 +15,7 @@ def run():
     # Initiate out.txt
     init_out()
 
-    crossover_rate = 1
+    crossover_rate = 0.8
 
     # Get total utils
     original_utils = sum([task.wcet / task.period for task in Solution.rt_tasks])
@@ -29,7 +29,7 @@ def run():
         solutions.sort()  # Sort solutions by score
 
         for g in range(ga_configs.MAX_GEN):
-            if g != 0 and g % 100 == 0:
+            if g != 0 and g % 2 == 0:
                 report_print(core_max, g, solutions)
 
             new_solutions = []

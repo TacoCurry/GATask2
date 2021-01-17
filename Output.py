@@ -35,9 +35,16 @@ def report_print(core_max, n_generation, solutions):
     power_avg = power_sum / len(solutions)
     util_avg = util_sum / len(solutions)
 
+    # with open(file, "a", encoding='UTF8') as f:
+    #     f.write("generation: {}, power_min: {}, power_avg: {}, power_max: {}, "
+    #             "util_min: {}, util_avg: {}, util_max: {}\n".format(n_generation, round(power_min, 5),
+    #                                                                 round(power_avg, 5), round(power_max, 5),
+    #                                                                 round(util_min, 5), round(util_avg, 5),
+    #                                                                 round(util_max, 5)))
+
     with open(file, "a", encoding='UTF8') as f:
-        f.write("generation: {}, power_min: {}, power_avg: {}, power_max: {}, "
-                "util_min: {}, util_avg: {}, util_max: {}\n".format(n_generation, round(power_min, 5),
+        f.write("{}, {}, {}, {}, "
+                "{}, {}, {}\n".format(n_generation, round(power_min, 5),
                                                                     round(power_avg, 5), round(power_max, 5),
                                                                     round(util_min, 5), round(util_avg, 5),
                                                                     round(util_max, 5)))
