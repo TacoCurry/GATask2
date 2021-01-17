@@ -1,3 +1,5 @@
+import time
+
 def result_print(n_core, solution, file="result.txt"):
     with open(file, "a", encoding='UTF8') as f:
         f.write("{}\n".format(n_core))
@@ -12,7 +14,7 @@ def init_out(file="result.txt"):
         f.write("\n")
 
 
-def report_print(core_max, n_generation, solutions):
+def report_print(core_max, n_generation, solutions, start_time):
     file = "report{}.txt".format(core_max)
 
     power_min = power_max = power_sum = solutions[0].power
@@ -41,10 +43,9 @@ def report_print(core_max, n_generation, solutions):
     #                                                                 round(power_avg, 5), round(power_max, 5),
     #                                                                 round(util_min, 5), round(util_avg, 5),
     #                                                                 round(util_max, 5)))
-
     with open(file, "a", encoding='UTF8') as f:
         f.write("{}, {}, {}, {}, "
-                "{}, {}, {}\n".format(n_generation, round(power_min, 5),
+                "{}, {}, {}, {}\n".format(n_generation, round(power_min, 5),
                                                                     round(power_avg, 5), round(power_max, 5),
                                                                     round(util_min, 5), round(util_avg, 5),
-                                                                    round(util_max, 5)))
+                                                                    round(util_max, 5), time.time() - start_time))

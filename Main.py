@@ -4,6 +4,7 @@ from Input import *
 import math
 import random
 import copy
+import time
 
 
 def run():
@@ -21,6 +22,8 @@ def run():
     original_utils = sum([task.wcet / task.period for task in Solution.rt_tasks])
     print("Original Total util: {}".format(original_utils))
 
+    start_time = time.time()
+
     for core_max in range(Solution.processor.n_core, math.ceil(original_utils) - 1, -1):
         # 1. Make initial solution set
         Solution.set_random_seed()
@@ -29,8 +32,8 @@ def run():
         solutions.sort()  # Sort solutions by score
 
         for g in range(ga_configs.MAX_GEN):
-            if g != 0 and g % 2 == 0:
-                report_print(core_max, g, solutions)
+            # if g != 0 and g % 2 == 0:
+            report_print(core_max, g, solutions, start_time)
 
             new_solutions = []
             for try_count in range(ga_configs.TRY_LIMIT):
